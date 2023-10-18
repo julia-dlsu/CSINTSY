@@ -1,16 +1,16 @@
 package solver;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class State {
 
-    public State(ArrayList<Coordinate> walls, ArrayList<Coordinate> crates, ArrayList<Coordinate> goals,
+    public State(HashSet<Coordinate> walls, HashSet<Coordinate> crates, HashSet<Coordinate> goals,
                 Coordinate player, String path, int width, int height, Deadlock checker){
             this.walls = walls;
             this.crates = crates;
             this.goals = goals;
             this.player = player;
-            successors = new ArrayList<State>();
+            successors = new HashSet<>();
             this.checker = checker;
             this.path = path;
             this.width = width;
@@ -24,29 +24,26 @@ public class State {
         int y = player.getY();
         int manhattanA = 0; //player to crate
         int manhattanB = 0; // crate to goal
-        ArrayList<Coordinate> cratesLeft = new ArrayList<Coordinate>(crates);
-        ArrayList<Coordinate> goalsLeft = new ArrayList<Coordinate>(goals);
+        HashSet<Coordinate> cratesLeft = new HashSet<>(crates);
+        HashSet<Coordinate> goalsLeft = new HashSet<>(goals);
 
-        for(int i = 0; i < crates.size(); i++){
-            if(goals.contains(crates.get(i))){
-                goalsLeft.remove(crates.get(i));
-                cratesLeft.remove(crates.get(i));
+        for(Coordinate i : crates){
+            if(goals.contains(i)){
+                goalsLeft.remove(i);
+                cratesLeft.remove(i);
             }
         }
 
-        for (int i = 0; i < cratesLeft.size(); i++){
-            if(!goalsLeft.contains(crates.get(i))) {
-                Coordinate tempCrate = cratesLeft.get(i);
-                manhattanA += Math.abs(x - tempCrate.getX()) + Math.abs(y - tempCrate.getY());
+        for (Coordinate i : cratesLeft){
+            if(!goalsLeft.contains(i)) {
+                manhattanA += Math.abs(x - i.getX()) + Math.abs(y - i.getY());
             }
         }
 
-        for (int i = 0; i < cratesLeft.size(); i++){
-            Coordinate tempCrate = cratesLeft.get(i);
-            if(!goalsLeft.contains(tempCrate)){
-                for (int j = 0; j < goals.size(); j++){
-                    Coordinate tempGoal = goals.get(j);
-                    manhattanB += Math.abs(tempCrate.getX() - tempGoal.getX()) + Math.abs(tempCrate.getY() - tempGoal.getY());
+        for (Coordinate i : cratesLeft){
+            if(!goalsLeft.contains(i)){
+                for (Coordinate j : goalsLeft){
+                    manhattanB += Math.abs(i.getX() - j.getX()) + Math.abs(j.getY() - i.getY());
                 }
             }
         }
@@ -118,7 +115,7 @@ public class State {
             next = new State(walls, crates, goals, newPlayer, path + direction, width, height, checker);
         }
         else if (moveCrate){
-            ArrayList<Coordinate> temp = new ArrayList<Coordinate>(crates);
+            HashSet<Coordinate> temp = new HashSet<>(crates);
             temp.remove(newPlayer);
             temp.add(newCrate);
             next = new State(walls, temp, goals, newPlayer, path + direction, width, height, checker);
@@ -142,15 +139,15 @@ public class State {
         move('r', new Coordinate(tempX, tempY+1), new Coordinate(tempX, tempY+2));
     }
 
-    public ArrayList<State> getSuccessors(){
+    public HashSet<State> getSuccessors(){
         return successors;
     }
 
     public boolean checkGoal(){
         int n = 0;
 
-        for(int i = 0; i < crates.size(); i++){
-            if (goals.contains(crates.get(i))){
+        for(Coordinate i : crates){
+            if (goals.contains(i)){
                 n++;
             }
         }
@@ -158,7 +155,7 @@ public class State {
         return false;
     }
 
-    public ArrayList<Coordinate> getCrates(){
+    public HashSet<Coordinate> getCrates(){
         return crates;
     }
 
@@ -170,8 +167,8 @@ public class State {
     public boolean equals(Object obj){
         if (obj instanceof State){
             State temp = (State) obj;
-            ArrayList<Coordinate> tempCrate1 = crates;
-            ArrayList<Coordinate> tempCrate2 = temp.getCrates();
+            HashSet<Coordinate> tempCrate1 = crates;
+            HashSet<Coordinate> tempCrate2 = temp.getCrates();
             Coordinate tempPlayer = temp.getPlayer();
 
             if (tempCrate1.equals(tempCrate2) && player.equals(tempPlayer)){
@@ -181,11 +178,21 @@ public class State {
          return false;
     }
 
-    private ArrayList<Coordinate> walls;
-    private ArrayList<Coordinate> crates;
-    private ArrayList<Coordinate> goals;
+    @Override
+    public int hashCode() {
+        int crateHashCode = 0;
+        for (Coordinate i : crates) {
+            crateHashCode += i.hashCode();
+            crateHashCode *= 37;
+        }
+        return player.getX() * 73 +  player.getY() + crateHashCode;
+    }
+
+    private HashSet<Coordinate> walls;
+    private HashSet<Coordinate> crates;
+    private HashSet<Coordinate> goals;
     private Coordinate player;
-    private ArrayList<State> successors;
+    private HashSet<State> successors;
     private Deadlock checker;
     private String path;
     private int heuristic;

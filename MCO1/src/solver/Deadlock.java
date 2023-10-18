@@ -1,16 +1,16 @@
 package solver;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Deadlock {
 
-    public Deadlock (ArrayList<Coordinate> walls, ArrayList<Coordinate> crates, ArrayList<Coordinate> goals, int width, int height){
+    public Deadlock (HashSet<Coordinate> walls, HashSet<Coordinate> crates, HashSet<Coordinate> goals, int width, int height){
         this.walls = walls;
         this.crates = crates;
         this.goals = goals;
         this.width = width;
         this.height = height;
-        boundaries = new ArrayList<Coordinate>();
+        boundaries = new HashSet<>();
     }
 
     public boolean checkDeadlock(Coordinate cratePos){
@@ -42,57 +42,57 @@ public class Deadlock {
     }
 
     public void populateBoundaries(){
-        ArrayList<Coordinate> whitelist = new ArrayList<Coordinate>();
+        HashSet<Coordinate> whitelist = new HashSet<>();
 
-        for (int i = 0; i <goals.size(); i++){
-            Coordinate temp = goals.get(i);
+        for (Coordinate i : goals){
+            Coordinate temp = i;
             Coordinate temp2;
-            whitelist.add(goals.get(i));
+            whitelist.add(i);
 
             // checking for the leftmost wall
-            if(temp.getY() - 1 == 0){
-                if (walls.contains(new Coordinate(temp.getX(), temp.getY()-1))){
+            if(i.getY() - 1 == 0){
+                if (walls.contains(new Coordinate(i.getX(), i.getY()-1))){
                     for (int j = 0; j < height; j++){
-                        temp2 = new Coordinate(j, temp.getY());
+                        temp2 = new Coordinate(j, i.getY());
                         if(!walls.contains(temp2))  whitelist.add(temp2);
                     }
                 }
             }
 
             //checking for the rightmost wall
-            else if(temp.getY() + 1 == width - 1){
-                if (walls.contains(new Coordinate(temp.getX(), temp.getY()+1))){
+            else if(i.getY() + 1 == width - 1){
+                if (walls.contains(new Coordinate(i.getX(), i.getY()+1))){
                     for (int j = 0; j < height; j++){
-                        temp2 = new Coordinate(j, temp.getY());
+                        temp2 = new Coordinate(j, i.getY());
                         if(!walls.contains(temp2))  whitelist.add(temp2);
                     }
                 }
             }
 
             //checking for the uppermost wall
-            if(temp.getX() - 1 == 0){
-                if (walls.contains(new Coordinate(temp.getX()-1, temp.getY()))){
+            if(i.getX() - 1 == 0){
+                if (walls.contains(new Coordinate(i.getX()-1, i.getY()))){
                     for (int j = 0; j < width; j++){
-                        temp2 = new Coordinate(temp.getX(), j);
+                        temp2 = new Coordinate(i.getX(), j);
                         if(!walls.contains(temp2))  whitelist.add(temp2);
                     }
                 }
             }
 
             //checking for the bottommost wall
-            else if(temp.getX() + 1 == height - 1){
-                if (walls.contains(new Coordinate(temp.getX()+1, temp.getY()))){
+            else if(i.getX() + 1 == height - 1){
+                if (walls.contains(new Coordinate(i.getX()+1, i.getY()))){
                     for (int j = 0; j < width; j++){
-                        temp2 = new Coordinate(temp.getX(), j);
+                        temp2 = new Coordinate(i.getX(), j);
                         if(!walls.contains(temp2))  whitelist.add(temp2);
                     }
                 }
             }
         }
 
-        for(int i = 0; i < walls.size(); i++){
-            if(!whitelist.contains(walls.get(i))){
-                whitelist.add(walls.get(i));
+        for(Coordinate i : walls){
+            if(!whitelist.contains(i)){
+                whitelist.add(i);
             }
         }
 
@@ -113,21 +113,23 @@ public class Deadlock {
             Coordinate up = new Coordinate(1, a);
             Coordinate down = new Coordinate(height-2, a);
             // topmost side
-            if (!whitelist.contains(up)){
+            if (!whitelist.contains(up) && !boundaries.contains(up)){
                 boundaries.add(up);
             }
             // bottommost side
-            if (!whitelist.contains(down)){
+            if (!whitelist.contains(down) && !boundaries.contains(down)){
                 boundaries.add(down);
             }
         }
 
-        for(int i = 0; i <whitelist.size(); i++){
-            System.out.println("Whitelist " + i + ": x = " + whitelist.get(i).getX() + " | y = " + whitelist.get(i).getY());
+        for(Coordinate i : whitelist){
+            System.out.println("Whitelist " + i + ": x = " + i.getX() + " | y = " + i.getY());
         }
-        for(int i = 0; i < boundaries.size(); i++){
-            System.out.println("Boundary " + i + ": x = " + boundaries.get(i).getX() + " | y = " + boundaries.get(i).getY());
+        for(Coordinate i : boundaries){
+            System.out.println("Boundary " + i + ": x = " + i.getX() + " | y = " + i.getY());
         }
+
+
     }
 
     public boolean checkBoundaries(Coordinate cratePos){
@@ -137,10 +139,10 @@ public class Deadlock {
         return false;
     }
 
-    private ArrayList<Coordinate> boundaries;
-    private ArrayList<Coordinate> walls;
-    private ArrayList<Coordinate> crates;
-    private ArrayList<Coordinate> goals;
+    private HashSet<Coordinate> boundaries;
+    private HashSet<Coordinate> walls;
+    private HashSet<Coordinate> crates;
+    private HashSet<Coordinate> goals;
     private int width;
     private int height;
 }
