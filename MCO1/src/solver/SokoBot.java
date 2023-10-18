@@ -7,12 +7,12 @@ public class SokoBot {
 
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
     
-    for (int h = 0; h < height; h++){
-      for (int w = 0; w < width; w++){
-        System.out.print(mapData[h][w]);
-      }
-      System.out.println();
-    }
+    // for (int h = 0; h < height; h++){
+    //   for (int w = 0; w < width; w++){
+    //     System.out.print(mapData[h][w]);
+    //   }
+    //   System.out.println();
+    // }
 
     setMapCoordinates(width, height, mapData);
     setItemCoordinates(width, height, itemsData);
@@ -22,7 +22,9 @@ public class SokoBot {
       // sort states by heuristic + cost (length of moves)
       StateComparator comparator = new StateComparator();
       PriorityQueue<State> states = new PriorityQueue<State>(comparator);
-      State intial = new State(walls, crates, goals, player, "", width, height);
+      Deadlock checker = new Deadlock(walls, crates, goals, width, height);
+      checker.populateBoundaries();
+      State intial = new State(walls, crates, goals, player, "", width, height, checker);
       states.add(intial);
 
       // keep track of visited states from the queue
@@ -43,16 +45,14 @@ public class SokoBot {
           }
         }
         else {
-          return currState.getPath().toString();
-        }
-
-        for (int j = 0; j < visited.size(); j++){
-          System.out.println(visited.get(j));
+          System.out.println(currState.getPath());
+          return currState.getPath();
         }
       }
 
     } catch (NullPointerException e) {
       System.out.println("UNSOLVABLE");
+      e.printStackTrace();
     } catch (Exception ex) {
       ex.printStackTrace();
     }

@@ -5,12 +5,13 @@ import java.util.ArrayList;
 public class State {
 
     public State(ArrayList<Coordinate> walls, ArrayList<Coordinate> crates, ArrayList<Coordinate> goals,
-                Coordinate player, String path, int width, int height){
+                Coordinate player, String path, int width, int height, Deadlock checker){
             this.walls = walls;
             this.crates = crates;
             this.goals = goals;
             this.player = player;
             successors = new ArrayList<State>();
+            this.checker = checker;
             this.path = path;
             this.width = width;
             this.height = height;
@@ -93,21 +94,22 @@ public class State {
         // move crate to space
         if (!isWall && isCrate){
             if (!isWall2 && !isCrate2){
-                moveCrate = true;
+                if (!checker.checkDeadlock(newCrate)){
+                    moveCrate = true;
+                }
             }
         }
 
         // make the move
         State next;
         if (movePlayer){
-
-            next = new State(walls, crates, goals, newPlayer, path + direction, width, height);
+            next = new State(walls, crates, goals, newPlayer, path + direction, width, height, checker);
         }
         else if (moveCrate){
             ArrayList<Coordinate> temp = new ArrayList<Coordinate>(crates);
             temp.remove(newPlayer);
             temp.add(newCrate);
-            next = new State(walls, temp, goals, newPlayer, path + direction, width, height);
+            next = new State(walls, temp, goals, newPlayer, path + direction, width, height, checker);
         }
         else{
             next = null;
@@ -140,8 +142,6 @@ public class State {
                 n++;
             }
         }
-        System.out.println(n);
-        System.out.println(path.toString());
         if (n == goals.size()) return true;
         return false;
     }
@@ -174,6 +174,7 @@ public class State {
     private ArrayList<Coordinate> goals;
     private Coordinate player;
     private ArrayList<State> successors;
+    private Deadlock checker;
     private String path;
     private int heuristic;
     private int width;
