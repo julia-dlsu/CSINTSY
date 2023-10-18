@@ -2,11 +2,12 @@ package solver;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.*;
 
 public class SokoBot {
 
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
-    
+
     // for (int h = 0; h < height; h++){
     //   for (int w = 0; w < width; w++){
     //     System.out.print(mapData[h][w]);

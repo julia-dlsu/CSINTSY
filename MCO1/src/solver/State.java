@@ -17,25 +17,37 @@ public class State {
             this.height = height;
             heuristic = 0;
         }
-    
+
     // computation for heuristics
     private void manhattanDistance(){
         int x = player.getX();
         int y = player.getY();
         int manhattanA = 0; //player to crate
         int manhattanB = 0; // crate to goal
+        ArrayList<Coordinate> cratesLeft = new ArrayList<Coordinate>(crates);
+        ArrayList<Coordinate> goalsLeft = new ArrayList<Coordinate>(goals);
 
-        for (int i = 0; i < crates.size(); i++){
-            Coordinate tempCrate = crates.get(i);
-            manhattanA += Math.abs(x - tempCrate.getX()) + Math.abs(y - tempCrate.getY());
+        for(int i = 0; i < crates.size(); i++){
+            if(goals.contains(crates.get(i))){
+                goalsLeft.remove(crates.get(i));
+                cratesLeft.remove(crates.get(i));
+            }
         }
 
-        for (int i = 0; i < crates.size(); i++){
-            Coordinate tempCrate = crates.get(i);
-            
-            for (int j = 0; j < goals.size(); j++){
-                Coordinate tempGoal = goals.get(j);
-                manhattanB += Math.abs(tempCrate.getX() - tempGoal.getX()) + Math.abs(tempCrate.getY() - tempGoal.getY());
+        for (int i = 0; i < cratesLeft.size(); i++){
+            if(!goalsLeft.contains(crates.get(i))) {
+                Coordinate tempCrate = cratesLeft.get(i);
+                manhattanA += Math.abs(x - tempCrate.getX()) + Math.abs(y - tempCrate.getY());
+            }
+        }
+
+        for (int i = 0; i < cratesLeft.size(); i++){
+            Coordinate tempCrate = cratesLeft.get(i);
+            if(!goalsLeft.contains(tempCrate)){
+                for (int j = 0; j < goals.size(); j++){
+                    Coordinate tempGoal = goals.get(j);
+                    manhattanB += Math.abs(tempCrate.getX() - tempGoal.getX()) + Math.abs(tempCrate.getY() - tempGoal.getY());
+                }
             }
         }
         heuristic = manhattanA + manhattanB;
@@ -58,7 +70,7 @@ public class State {
         if (newCrate.getX() <= 1 && newCrate.getY() <= 1 && newCrate.getX() >= width && newCrate.getY() >= height){
             return;
         }
-        
+
         boolean isWall = true;
         boolean isWall2 = true;
         boolean isCrate = false;
@@ -70,7 +82,7 @@ public class State {
         if (!walls.contains(newPlayer)){
             isWall = false;
         }
-        
+
         // check if crate
         if (crates.contains(newPlayer)){
             isCrate = true;
@@ -161,14 +173,14 @@ public class State {
             ArrayList<Coordinate> tempCrate1 = crates;
             ArrayList<Coordinate> tempCrate2 = temp.getCrates();
             Coordinate tempPlayer = temp.getPlayer();
-            
+
             if (tempCrate1.equals(tempCrate2) && player.equals(tempPlayer)){
                 return true;
             }
         }
          return false;
     }
-    
+
     private ArrayList<Coordinate> walls;
     private ArrayList<Coordinate> crates;
     private ArrayList<Coordinate> goals;
