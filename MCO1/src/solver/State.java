@@ -22,11 +22,11 @@ public class State {
     private void manhattanDistance(){
         int x = player.getX();
         int y = player.getY();
-        int manhattanA = 0; //player to crate
-        int manhattanB = 0; // crate to goal
+        this.heuristic = 0;
         HashSet<Coordinate> cratesLeft = new HashSet<>(crates);
         HashSet<Coordinate> goalsLeft = new HashSet<>(goals);
 
+        // so that heuristics will no longer consider crates and goal that are completed
         for(Coordinate i : crates){
             if(goals.contains(i)){
                 goalsLeft.remove(i);
@@ -34,31 +34,36 @@ public class State {
             }
         }
 
+        // player to crate manhattan distance
         for (Coordinate i : cratesLeft){
             if(!goalsLeft.contains(i)) {
-                manhattanA += Math.abs(x - i.getX()) + Math.abs(y - i.getY());
+                this.heuristic += Math.abs(x - i.getX()) + Math.abs(y - i.getY());
             }
         }
 
+        // crate to goal manhattan distance
         for (Coordinate i : cratesLeft){
             if(!goalsLeft.contains(i)){
                 for (Coordinate j : goalsLeft){
-                    manhattanB += Math.abs(i.getX() - j.getX()) + Math.abs(j.getY() - i.getY());
+                    this.heuristic += Math.abs(i.getX() - j.getX()) + Math.abs(j.getY() - i.getY());
                 }
             }
         }
-        heuristic = manhattanA + manhattanB;
     }
 
+    // getter for heuristic attribute
     public int getHeuristic(){
         manhattanDistance();
         return heuristic;
     }
 
+    // getter for path attribute
     public String getPath(){
         return path;
     }
 
+    /* checks for the validity of a move (state transition) and 
+    makes the state transition according to validity, heuristics, & deadlocks*/
     public void move(char direction, Coordinate newPlayer, Coordinate newCrate){
         // checks if move is within bounds
         if (newPlayer.getX() <= 1 && newPlayer.getY() <= 1 && newPlayer.getX() >= width && newPlayer.getY() >= height)
@@ -123,6 +128,7 @@ public class State {
             successors.add(next);
     }
 
+    // initializes the successor (u,d,l,r) states of this object state
     public void populateSuccessors(){
         int tempX = player.getX();
         int tempY = player.getY();
@@ -132,10 +138,12 @@ public class State {
         move('r', new Coordinate(tempX, tempY+1), new Coordinate(tempX, tempY+2));
     }
 
+    // getter for succussors attributes
     public HashSet<State> getSuccessors(){
         return successors;
     }
 
+    // checks if all goal coordinates have a crate
     public boolean checkGoal(){
         int n = 0;
 
@@ -147,10 +155,12 @@ public class State {
         return false;
     }
 
+    // getter for crates attribute
     public HashSet<Coordinate> getCrates(){
         return crates;
     }
 
+    // getter for player attribute
     public Coordinate getPlayer(){
         return player;
     }
@@ -166,6 +176,8 @@ public class State {
         return false;
     }
 
+    /*  computes the hash of the State object based on the:
+        hashcode of its crates and location of its player */    
     @Override
     public int hashCode() {
         int Hash = 0;

@@ -13,6 +13,7 @@ public class Deadlock {
         boundaries = new HashSet<>();
     }
 
+    // checks for corner and boundary deadlock
     public boolean checkDeadlock(Coordinate cratePos){
         Coordinate left = new Coordinate(cratePos.getX(), cratePos.getY() - 1);
         Coordinate right = new Coordinate(cratePos.getX(), cratePos.getY() + 1);
@@ -41,11 +42,11 @@ public class Deadlock {
         return false; // not deadlock
     }
 
+    // initializes the boundaries attribute
     public void populateBoundaries(){
         HashSet<Coordinate> whitelist = new HashSet<>();
 
         for (Coordinate i : goals){
-            //Coordinate temp = i;
             Coordinate temp2;
             whitelist.add(i);
 
@@ -132,6 +133,7 @@ public class Deadlock {
 
     }
 
+    // checks if the target position of a crate will result to a boundary deadlock
     public boolean checkBoundaries(Coordinate cratePos){
         if (boundaries.contains(cratePos)){
             return true;
