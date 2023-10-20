@@ -1,6 +1,7 @@
 package solver;
 
-public class Coordinate {
+public class 
+Coordinate {
     public Coordinate(int x, int y){
         this.x = x;
         this.y = y;
@@ -31,6 +32,11 @@ public class Coordinate {
             }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return x + y * 7;
     }
 
     private int x;

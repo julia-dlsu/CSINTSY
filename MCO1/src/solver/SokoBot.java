@@ -1,22 +1,28 @@
 package solver;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.*;
 
 public class SokoBot {
 
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
-    
+
     // for (int h = 0; h < height; h++){
     //   for (int w = 0; w < width; w++){
     //     System.out.print(mapData[h][w]);
     //   }
     //   System.out.println();
     // }
-
     setMapCoordinates(width, height, mapData);
     setItemCoordinates(width, height, itemsData);
 
+    for(Coordinate i : crates){
+      System.out.println(i);
+    }
+    for(Coordinate i : goals){
+      System.out.println(i);
+    }
     // A STAR IMPLEMENTATION
     try {
       // sort states by heuristic + cost (length of moves)
@@ -28,7 +34,7 @@ public class SokoBot {
       states.add(intial);
 
       // keep track of visited states from the queue
-      ArrayList<State> visited = new ArrayList<State>();
+      HashSet<State> visited = new HashSet<State>();
 
       // A STAR LOOP
       // keep looping until queue is empty
@@ -38,9 +44,9 @@ public class SokoBot {
 
         if (!currState.checkGoal()){
           currState.populateSuccessors();
-          for (int i = 0;  i < currState.getSuccessors().size(); i++){
-            if (!visited.contains(currState.getSuccessors().get(i))){
-              states.add(currState.getSuccessors().get(i)); // get curr state's successors
+          for (State i : currState.getSuccessors()){
+            if (!visited.contains(i)){
+              states.add(i); // get curr state's successors
             }
           }
         }
@@ -56,12 +62,12 @@ public class SokoBot {
     } catch (Exception ex) {
       ex.printStackTrace();
     }
-    return "";
+    return "durl";
   }
 
   private void setMapCoordinates(int width, int height, char[][] mapData){
-    walls = new ArrayList<Coordinate>();
-    goals = new ArrayList<Coordinate>();
+    walls = new HashSet<>();
+    goals = new HashSet<>();
 
     for (int h = 0; h < height; h++){
       for (int w = 0; w < width; w++){
@@ -80,7 +86,7 @@ public class SokoBot {
   }
 
   private void setItemCoordinates(int width, int height, char[][] itemsData){
-    crates = new ArrayList<Coordinate>();
+    crates = new HashSet<>();
 
     for (int h = 0; h < height; h++){
       for (int w = 0; w < width; w++){
@@ -96,9 +102,9 @@ public class SokoBot {
     }
   }
 
-  private ArrayList<Coordinate> walls;
-  private ArrayList<Coordinate> crates;
-  private ArrayList<Coordinate> goals;
+  private HashSet<Coordinate> walls;
+  private HashSet<Coordinate> crates;
+  private HashSet<Coordinate> goals;
   private Coordinate player;
 
 }
