@@ -8,21 +8,9 @@ public class SokoBot {
 
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
 
-    // for (int h = 0; h < height; h++){
-    //   for (int w = 0; w < width; w++){
-    //     System.out.print(mapData[h][w]);
-    //   }
-    //   System.out.println();
-    // }
     setMapCoordinates(width, height, mapData);
     setItemCoordinates(width, height, itemsData);
 
-    for(Coordinate i : crates){
-      System.out.println(i);
-    }
-    for(Coordinate i : goals){
-      System.out.println(i);
-    }
     // A STAR IMPLEMENTATION
     try {
       // sort states by heuristic + cost (length of moves)

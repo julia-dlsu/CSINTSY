@@ -123,12 +123,12 @@ public class Deadlock {
             }
         }
 
-        for(Coordinate i : whitelist){
-            System.out.println("Whitelist " + i + ": x = " + i.getX() + " | y = " + i.getY());
-        }
-        for(Coordinate i : boundaries){
-            System.out.println("Boundary " + i + ": x = " + i.getX() + " | y = " + i.getY());
-        }
+        // for(Coordinate i : whitelist){
+        //     System.out.println("Whitelist " + i + ": x = " + i.getX() + " | y = " + i.getY());
+        // }
+        // for(Coordinate i : boundaries){
+        //     System.out.println("Boundary " + i + ": x = " + i.getX() + " | y = " + i.getY());
+        // }
 
 
     }
