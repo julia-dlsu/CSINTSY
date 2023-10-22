@@ -1,6 +1,7 @@
 package solver;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 public class State {
 
@@ -177,15 +178,10 @@ public class State {
     }
 
     /*  computes the hash of the State object based on the:
-        hashcode of its crates and location of its player */    
+        hash of crates and player */    
     @Override
     public int hashCode() {
-        int Hash = 0;
-        for (Coordinate x : crates) {
-            Hash += 19 * x.hashCode();
-            //Hash *= 19;
-        }
-        return player.getX() * Hash +  player.getY() * 97;
+        return Objects.hash(crates, player);
     }
 
     private HashSet<Coordinate> walls;
