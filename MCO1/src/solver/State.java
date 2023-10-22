@@ -1,7 +1,6 @@
 package solver;
 
 import java.util.HashSet;
-import java.util.Objects;
 
 public class State {
 
@@ -69,7 +68,6 @@ public class State {
         // checks if move is within bounds
         if (newPlayer.getX() <= 1 && newPlayer.getY() <= 1 && newPlayer.getX() >= width && newPlayer.getY() >= height)
             return;
-        
         if (newCrate.getX() <= 1 && newCrate.getY() <= 1 && newCrate.getX() >= width && newCrate.getY() >= height)
             return;
 
@@ -178,10 +176,16 @@ public class State {
     }
 
     /*  computes the hash of the State object based on the:
-        hash of crates and player */    
+        hash of its crates and location of its player */    
     @Override
     public int hashCode() {
-        return Objects.hash(crates, player);
+        int Hash = 0;
+        for (Coordinate x : crates) {
+            Hash += x.hashCode();
+            Hash += player.getX() * player.getY();
+            Hash *= 31;
+        }
+        return Hash;
     }
 
     private HashSet<Coordinate> walls;

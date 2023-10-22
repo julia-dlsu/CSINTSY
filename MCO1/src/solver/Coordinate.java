@@ -1,7 +1,6 @@
 package solver;
 
-public class 
-Coordinate {
+public class Coordinate {
 
     public Coordinate(int x, int y){
         this.x = x;
@@ -42,7 +41,7 @@ Coordinate {
     // computes the hashcode of the coordinate based on its x and y attributes
     @Override
     public int hashCode() {
-        return x + y * 13;
+        return x + y * 37;
     }
 
     private int x;

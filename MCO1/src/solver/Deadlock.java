@@ -23,21 +23,18 @@ public class Deadlock {
 
         // CORNER DEADLOCK //
         if (walls.contains(left) || walls.contains(right)){
-            if (walls.contains(up) || walls.contains(down)){
+            if (walls.contains(up) || walls.contains(down))
                 corner = true;
-            }
         }
 
         if (corner){
-            if (!goals.contains(cratePos)){
+            if (!goals.contains(cratePos))
                 return true; // corner deadlock
-            }
         }
 
         // BOUNDARY DEADLOCK //
-        if (checkBoundaries(cratePos)){
+        if (checkBoundaries(cratePos))
             return true;
-        }
 
         return false; // not deadlock
     }
@@ -130,14 +127,11 @@ public class Deadlock {
         //     System.out.println("Boundary " + i + ": x = " + i.getX() + " | y = " + i.getY());
         // }
 
-
     }
 
     // checks if the target position of a crate will result to a boundary deadlock
     public boolean checkBoundaries(Coordinate cratePos){
-        if (boundaries.contains(cratePos)){
-            return true;
-        }
+        if (boundaries.contains(cratePos)) return true;
         return false;
     }
 
