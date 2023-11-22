@@ -19,7 +19,7 @@ statements = {
     13: r'(\w+) is an aunt of (\w+)\.$',
 }
 
-def parse_statements(input):
+def parse_statement(input):
     for key, pattern in statements.items():
         match = re.match(pattern, input)
         if match:
@@ -36,4 +36,4 @@ def check_query(x):
     print(q_result, "\n")
 
 chat_input = input("Enter a statement: ")
-parse_input(chat_input)
+parse_statement(chat_input)
