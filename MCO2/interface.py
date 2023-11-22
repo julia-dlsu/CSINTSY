@@ -19,7 +19,7 @@ statements = {
     13: r'(\w+) is an aunt of (\w+)\.$',
 }
 
-def parse_input(input):
+def parse_statements(input):
     for key, pattern in statements.items():
         match = re.match(pattern, input)
         if match:
@@ -34,15 +34,6 @@ def check_query(x):
     else:
         q_result = False
     print(q_result, "\n")
-
-# soln = prolog.query("add_child(aa, xx)")
-# check_query(soln)
-
-# soln = prolog.query("child(xx, aa)")
-# check_query(soln)
-
-# soln = prolog.query("child(aa, xx)")
-# check_query(soln)
 
 chat_input = input("Enter a statement: ")
 parse_input(chat_input)
