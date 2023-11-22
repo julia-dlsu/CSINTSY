@@ -1,12 +1,22 @@
+import re
 from pyswip import Prolog
 prolog = Prolog()
-prolog.consult("newprolog5.pl")
+prolog.consult("logic.pl")
 
 statements = {
-    1: r'(\w+) and (\w+) are siblings\.$',
-    2: r'(\w+) is a sister of (\w+)\.$',
-    3: r'(\w+) is the mother of (\w+)\.$',
+    r'(\w+) and (\w+) are siblings\.$',
+    r'(\w+) is a sister of (\w+)\.$',
+    r'(\w+) is the mother of (\w+)\.$'
 }
+
+def parse_input(input):
+    for pattern in statements:
+        match = re.match(pattern, input)
+        if match:
+            groups = match.groups()
+            print(f"Statement: {groups}")
+            return
+    print("Input not recognized.")
 
 def check_query(x):
     if list(x):
@@ -15,11 +25,14 @@ def check_query(x):
         q_result = False
     print(q_result, "\n")
 
-soln = prolog.query("add_child(aa, xx)")
-check_query(soln)
+# soln = prolog.query("add_child(aa, xx)")
+# check_query(soln)
 
-soln = prolog.query("child(xx, aa)")
-check_query(soln)
+# soln = prolog.query("child(xx, aa)")
+# check_query(soln)
 
-soln = prolog.query("child(aa, xx)")
-check_query(soln)
+# soln = prolog.query("child(aa, xx)")
+# check_query(soln)
+
+chat_input = input("Enter a statement: ")
+parse_input(chat_input)
