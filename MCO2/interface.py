@@ -19,7 +19,7 @@ statements = {
     11: r'(\w+) and (\w+) are the parents of (\w+)\.$',
     12: r'(\w+) is a grandfather of (\w+)\.$',
     13: r'(\w+) is a son of (\w+)\.$',
-    14: r'(\w+) is an aunt of (\w+)\.$',
+    14: r'(\w+) is an aunt of (\w+)\.$'
 }
 
 #format
