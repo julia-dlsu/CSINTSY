@@ -1,6 +1,7 @@
 import re
 import os
 from pyswip import Prolog
+from pyswip.easy import Variable
 prolog = Prolog()
 prolog.consult("logic.pl")
 os.system('cls')

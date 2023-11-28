@@ -65,27 +65,27 @@ child_of(A,B) :-
 %A is the parent of B if they are a child or he/she is a son or daughter of A.
 parent_of(A,B) :-
     (parent(A,B));
-    ((child(B,A); son(B,A); daughter(B,A), A\==B)).
-    %(sibling(B,C), (parent(D,C), parent(E,C), D\==E), parent(X,B), (X==D; X==E), (parent(A,B); assertz(parent(A,B))), !).
-    %(sibling(B,C), parent(D,C), parent(E,C), D\==E, parent(X,B), \+ parent(Y,B), X\==Y, (X\==D; X\==E), (parent(A,B); assertz(parent(A,B))), !).
+    (sibling(B,C), father(D,C), mother(A,C), father(X,B), \+mother(Y,B), X\==D, assertz(mother(A,B)), assertz(parent(A,B)), assertz(child(B,A)));
+    (sibling(B,C), father(A,C), mother(E,C), mother(X,B), \+father(Y,B), X\==E, assertz(father(A,B)), assertz(parent(A,B)), assertz(child(B,A)));
+    (child(B,A); son(B,A); daughter(B,A), A\==B).
 
 mother_of(A,B):-
     A\==B,
     \+ is_a(A,male),
-    mother(A,B);
-    child(B,A);
-    (sibling(C,B), father(D,C), father(E,B), mother(A,C));
-    ((sibling(B,C), father(D,C), father(E,B), mother(A,C)), (mother(A,B);assertz(mother(A,B))));
-    ((sibling(B,C), father(D,C), father(E,B)), (assertz(mother(A,B)), assertz(mother(A,C)))). %Untested
+    (mother(A,B), !);
+    (child(B,A), \+ father(A,B), !);
+    (sibling(C,B), father(D,C), father(E,B), mother(A,C), !);
+    ((sibling(B,C), father(D,C), father(E,B), mother(A,C)), (mother(A,B);assertz(mother(A,B))), (parent(A,B);assertz(parent(A,B))), (child(B,A);assertz(child(B,A))), !);
+    ((sibling(B,C), father(D,C), father(E,B)), (assertz(mother(A,B)), assertz(mother(A,C))), (parent(A,B);assertz(parent(A,B))), (child(B,A);assertz(child(B,A))), !).
 
 father_of(A,B):-
     A\==B,
     \+ is_a(A,female),
-    father(A,B);
-    child(B,A);
-    (sibling(C,B), mother(D,C), mother(E,B), father(A,C));
-    ((sibling(B,C), mother(D,C), mother(E,B), father(A,C)), (father(A,B);assertz(father(A,B))));
-    ((sibling(B,C), mother(D,C), mother(E,B)), (assertz(father(A,B)), assertz(father(A,C)))). %Untested
+    (father(A,B), !);
+    (child(B,A), \+ mother(A,B), !);
+    (sibling(C,B), mother(D,C), mother(E,B), father(A,C), !);
+    ((sibling(B,C), mother(D,C), mother(E,B), father(A,C)), (father(A,B);assertz(father(A,B))), (parent(A,B);assertz(parent(A,B))), (child(B,A);assertz(child(B,A))), !);
+    ((sibling(B,C), mother(D,C), mother(E,B)), (assertz(father(A,B)), assertz(father(A,C))), (parent(A,B);assertz(parent(A,B))), (child(B,A);assertz(child(B,A))) , !).
 
 
 % A is a sibling of B if (father/mother of A) and (father/mother of C)
@@ -94,15 +94,10 @@ sibling_of(A,B) :-
     (parent(C,B), parent(C,A), A\==B);
     (sibling(A,B));
     (sibling(B,A));
-    (parent(C,A), grandparent(C,D), child(D,B));
-    (parent(C,B), grandparent(C,D), child(D,A));
     (uncle(A,C), parent(B,C));
     (uncle(B,C), parent(A,C));
     (aunt(A,C), parent(B,C));
-    (aunt(B,C), parent(A,C));
-    %(sibling(A,C), sibling(B,A));
-    ((sibling(B,C),sibling(A,C), A\==B, B\==C, C\==A), (sibling(B,A); assertz(sibling(B,A)))).
-
+    (aunt(B,C), parent(A,C)).
 
 % A is a brother/sister of B
 brother_of(A,B) :-
@@ -153,17 +148,17 @@ aunt_of(A,B) :-
      A\==B,
      \+ is_a(A,male),
      (aunt(A,X), X==B);
-     (sibling(A,C), child(B,C));
-     (sibling(A,C), uncle(C,B));
-     (parent(C,A), grandparent(C,B)).
+     (sibling(A,C), child(B,C), is_a(A,female));
+     (sibling(A,C), uncle(C,B), is_a(A,female));
+     (parent(C,A), grandparent(C,B), is_a(A,female)).
 
 uncle_of(A,B) :-
     A\==B,
     \+ is_a(A,female),
     (uncle(A,X), X==B);
-    (sibling(A,C), child(B,C));
-    (sibling(A,C), aunt(C,B));
-    (parent(C,A), grandparent(C,B)).
+    (sibling(A,C), child(B,C), is_a(A,male));
+    (sibling(A,C), aunt(C,B), is_a(A,male));
+    (parent(C,A), grandparent(C,B),is_a(A,male)).
 
 
 %======== INSERTING FACTS + INFER ==========
@@ -219,7 +214,8 @@ add_parent(A, B):-
     \+ (father(_, B), mother(_, B)),
     \+ sibling_of(A, B),
     (
-           (sibling(B,C), (parent(X,C), parent(Y,C), parent(Z,B), X\==Y, Z\==X, Z\==Y, (A==X;A==Y))); %B has a sibling C -> C has parents X and Y -> B has parent Z
+           (sibling(B,C), (parent(X,C), parent(Y,C), (parent(Z,B), \+ (parent(W,B), W\==Z)),(A==X;A==Y))); %B has a sibling C -> C has parents X and Y -> B has parent Z and only Z -> Z is not equal to X and Y
+
            (sibling(B,C), (parent(X,C), parent(Y,C), \+parent(_,B), X\==Y, Z\==X)); %B has a sibling C -> C has parents X and Y -> B has no parents
            (sibling(B,C), (parent(X,C), \+parent(Y,C), \+parent(_,B)), X\==Y); %B has a sibling C -> C has a parent X -> B has no parents
            (sibling(B,C), (\+parent(_,C), parent(_,B))); % B has a sibling C -> C has no parents -> B has a parent
@@ -230,9 +226,6 @@ add_parent(A, B):-
     \+ grandparent_of(B, A),
     \+ (grandparent_of(C, B), parent_of(A, C)),
     \+ (child_of(C, A), grandparent_of(B, C)),
-    %(sibling(B,C), parent(D,C), parent(E,C), parent(X,B), (X\==D, X\==E), (A == D; A == E)),
-    %((sibling(B, C), parent(Y, C), parent(X, C), parent(Z, B), Y \== X, Y \== Z, X \== Z, (A == Y; A == X)),
-    %  (parent(A, B), \+ (child(B, _), child(B, _))), !);
     (\+ parent(A, B) , (assertz(parent(A, B)), !)), %MODIFIED: so that add_parent returns false if A is already a parent of B
     (child(B, A) ; (assertz(child(B, A)), !)),
     (
@@ -337,9 +330,7 @@ add_aunt(A,B) :-
     \+ child_of(A,B),
     \+ sibling_of(A,B),
     (aunt(A,B); assertz(aunt(A,B))),
-    (is_a(A,female); assertz(is_a(A,female))),
-    (sister_of(A,C), child_of(D,C), sibling_of(B,D); assertz(aunt(A,D))), %Inheritance to sibling
-    (aunt(A,B); assertz(aunt(A,B))).
+    (is_a(A,female); assertz(is_a(A,female))).
 
 add_uncle(A,B) :-
      A\==B,
@@ -353,7 +344,6 @@ add_uncle(A,B) :-
     \+ sibling_of(A,B),
     (uncle(A,B); assertz(uncle(A,B))),
     (is_a(A,male); assertz(is_a(A,male))).
-    %(brother_of(A,C), child_of(D,C), sibling_of(B,D); assertz(uncle(A,D))). %Inheritance to sibling
 
 add_sibling(A,B) :-
     A\==B,

@@ -1,47 +1,10 @@
-Instructions:
-1. Download the zip file.
-2. Unzip the folder.
-3. Open a command line on the folder's directory.
-4. Run the command: py interface.py
-
-[Valid Statements List]
-    1: r'(\w+) and (\w+) are siblings\.$',
-    2: r'(\w+) is a sister of (\w+)\.$',
-    3: r'(\w+) is the mother of (\w+)\.$',
-    4: r'(\w+) is a grandmother of (\w+)\.$',
-    5: r'(\w+) is a child of (\w+)\.$',
-    6: r'(\w+) is a daughter of (\w+)\.$',
-    7: r'(\w+) is an uncle of (\w+)\.$',
-    8: r'(\w+) is a brother of (\w+)\.$',
-    9: r'(\w+) is the father of (\w+)\.$',
-    10: r'(.+?) are children of (\w+)\.$',
-    11: r'(\w+) and (\w+) are the parents of (\w+)\.$',
-    12: r'(\w+) is a grandfather of (\w+)\.$',
-    13: r'(\w+) is a son of (\w+)\.$',
-    14: r'(\w+) is an aunt of (\w+)\.$'
-
-[Valid Questions List]
-    1: [r'are (\w+) and (\w+) siblings\?$', 0],
-    2: [r'is (\w+) a sister of (\w+)\?$', 0] ,
-    3: [r'is (\w+) a brother of (\w+)\?$', 0],
-    4: [r'is (\w+) the mother of (\w+)\?$', 0],
-    5: [r'is (\w+) the father of (\w+)\?$', 0],
-    6: [r'are (\w+) and (\w+) the parents of (\w+)\?$', 0],
-    7: [r'is (\w+) a grandmother of (\w+)\?$', 0],
-    8: [r'is (\w+) a daughter of (\w+)\?$', 0],
-    9: [r'is (\w+) a son of (\w+)\?$', 0],
-    10: [r'is (\w+) a child of (\w+)\?$', 0],
-    11: [r'are (.+?) children of (\w+)\?$', 0],
-    12: [r'is (\w+) an uncle of (\w+)\?$', 0],
-    13: [r'who are the siblings of (\w+)\?$', 1],
-    14: [r'who are the sisters of (\w+)\?$', 1],
-    15: [r'who are the brothers of (\w+)\?$', 1],
-    16: [r'who is the mother of (\w+)\?$', 1],
-    17: [r'who is the father of (\w+)\?$', 1],
-    18: [r'who are the parents of (\w+)\?$', 1],
-    19: [r'is (\w+) a grandfather of (\w+)\?$', 0],
-    20: [r'who are the daughters of (\w+)\?$', 1],
-    21: [r'who are the sons of (\w+)\?$', 1],
-    22: [r'who are the children of (\w+)\?$', 1],
-    23: [r'is (\w+) an aunt of (\w+)\?$', 0],
-    24: [r'are (\w+) and (\w+) relatives\?$', 0]
+Setup & Instructions: (for Windows OS)
+1. Have Git installed as a path. 
+2. Have Python 3 and PIP installed.
+3. Install this: "pip install git+https://github.com/yuce/pyswip@master#egg=pyswip".
+4. Download the zip file.
+5. Unzip the folder.
+6. Open a command line on the folder's directory.
+7. Run the command: py interface.py
+8. Type in valid prompts and wait for a reply.
+9. To exit the program, type "exit".
